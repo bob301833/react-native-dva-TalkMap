@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import MapView from 'react-native-maps';
-
+import { connect } from 'dva';
 //latitude: 25.054136,
 //longitude: 121.544512,
 
@@ -14,36 +14,46 @@ class Map extends Component {
         latitudeDelta: 0.00922,
         longitudeDelta: 0.00421
     },
-    markers: [{
-      latlng: {
-        latitude: 25.054136,
-        longitude: 121.544512
-      },
-      title: '卡比獸',
-      discription: '我超強'
-    }]
   }
 
   onRegionChange(region) {
     this.setState({ region });
   }
 
+  getRegion(region) {
+    console.log(region);
+    this.props.dispatch({ type: 'user/saveLocation', payload: region });
+  }
   render() {
+    const { users } = this.props;
     return (
       <View style={styles.container}>
       <MapView
+      onRegionChangeComplete={this.getRegion.bind(this)}
+      showsUserLocation
+      followsUserLocation
+      zoomEnabled
         style={styles.map}
         region={this.state.region}
         onRegionChange={this.onRegionChange.bind(this)}
       >
-       {this.state.markers.map(marker => (
-          <MapView.Marker
-            key={marker.latlng}
-            coordinate={marker.latlng}
-            title={marker.title}
-            description={marker.description}
-          />
-        ))}
+        {
+          Object.keys(users).map((val) => {
+           return (
+             <MapView.Marker
+              key={users[val].email}
+              coordinate={users[val].location}
+              title={users[val].email}
+             >
+              <View>
+                <Text>
+                  {users[val].email}
+                </Text>
+              </View>
+             </MapView.Marker>
+            );
+          })
+        }
       </MapView>
       </View>
     );
@@ -71,4 +81,10 @@ const styles = {
 
 };
 
-export default Map;
+const mapStateToProps = (state) => {
+  const { users } = state.user;
+  return { users };
+};
+
+export default connect(mapStateToProps)(Map);
+

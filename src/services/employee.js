@@ -3,6 +3,13 @@ import firebase from 'firebase';
 //const { currentUser } = firebase.auth();
 //const currentUserUid = currentUser.uid;
 
+const saveUserLocation = (currentUser, location) => {
+  return firebase.database().ref(`/users/${currentUser.uid}`)
+    .set({ location, email: currentUser.email })
+    .then((user) => ({ user }))
+    .catch((err) => ({ err }));
+};
+
 const signIn = (email, password) => {
   return firebase.auth().signInWithEmailAndPassword(email, password)
     .then(user => ({ user }))
@@ -13,7 +20,7 @@ const signIn = (email, password) => {
 };
 
 const getList = (currentUserUid, cb) => {
-  const ref = firebase.database().ref(`/users/${currentUserUid}/employees`);
+  const ref = firebase.database().ref('/users');
   const handler = snapshot => {
       cb(snapshot.val());
   };
@@ -49,5 +56,6 @@ export {
   getList,
   saveEmployeesData,
   createEmployeesData,
-  deleteEmployeesData
+  deleteEmployeesData,
+  saveUserLocation
 };
