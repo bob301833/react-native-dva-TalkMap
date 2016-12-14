@@ -17,6 +17,8 @@ const userModel = {
 
 subscriptions: {
   setup({ dispatch }) {
+
+
   },
 },
 
