@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserLocation } from '../services/employee';
+import { signIn, getList, saveUserEmail } from '../services/employee';
 
 const INITIAL_STATE = {
   email: '',
@@ -32,8 +32,9 @@ subscriptions: {
 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        getList(user.uid, users => {
-          dispatch({ type: 'user/getUsersLocation', payload: users });
+        saveUserEmail(user);
+        getList(user.uid, data => {
+          dispatch({ type: 'user/getUsersData', payload: data });
         });
         //setTimeout(() => {
           Actions.main();

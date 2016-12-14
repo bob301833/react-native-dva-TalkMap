@@ -3,12 +3,25 @@ import firebase from 'firebase';
 //const { currentUser } = firebase.auth();
 //const currentUserUid = currentUser.uid;
 
+const saveUserEmail = (currentUser) => {
+  return firebase.database().ref(`/users/${currentUser.uid}/email`)
+    .set(currentUser.email);
+};
+
 const saveUserLocation = (currentUser, location) => {
-  return firebase.database().ref(`/users/${currentUser.uid}`)
-    .set({ location, email: currentUser.email })
-    .then((user) => ({ user }))
+  return firebase.database().ref(`/users/${currentUser.uid}/location`)
+    .set(location)
+    .then((suc) => ({ suc }))
     .catch((err) => ({ err }));
 };
+
+const saveUserMessage = (currentUser, message) => {
+  return firebase.database().ref(`/users/${currentUser.uid}/message`)
+    .set(message)
+    .then((suc) => ({ suc }))
+    .catch((err) => ({ err }));
+};
+
 
 const signIn = (email, password) => {
   return firebase.auth().signInWithEmailAndPassword(email, password)
@@ -57,5 +70,7 @@ export {
   saveEmployeesData,
   createEmployeesData,
   deleteEmployeesData,
-  saveUserLocation
+  saveUserEmail,
+  saveUserLocation,
+  saveUserMessage
 };

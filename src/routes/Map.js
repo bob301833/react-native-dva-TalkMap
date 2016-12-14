@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import MapView from 'react-native-maps';
+import { InputItem, Flex, Button, WhiteSpace, WingBlank, ActivityIndicator, Card } from 'antd-mobile';
 import { connect } from 'dva';
+
 //latitude: 25.054136,
 //longitude: 121.544512,
 
@@ -20,41 +22,82 @@ class Map extends Component {
     this.setState({ region });
   }
 
+  onSubmit() {
+    this.props.dispatch({
+      type: 'user/saveMessage',
+      payload: this.props.message
+    });
+  }
+
   getRegion(region) {
-    console.log(region);
     this.props.dispatch({ type: 'user/saveLocation', payload: region });
   }
+  markPress(e) {
+    console.log(e);
+  }
+
+
   render() {
-    const { users } = this.props;
+    const { data, message, dispatch } = this.props;
     return (
-      <View style={styles.container}>
-      <MapView
-      onRegionChangeComplete={this.getRegion.bind(this)}
-      showsUserLocation
-      followsUserLocation
-      zoomEnabled
-        style={styles.map}
-        region={this.state.region}
-        onRegionChange={this.onRegionChange.bind(this)}
-      >
-        {
-          Object.keys(users).map((val) => {
-           return (
-             <MapView.Marker
-              key={users[val].email}
-              coordinate={users[val].location}
-              title={users[val].email}
-             >
-              <View>
-                <Text>
-                  {users[val].email}
-                </Text>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 12 }}>
+          <View style={styles.container}>
+          <MapView
+          onRegionChangeComplete={this.getRegion.bind(this)}
+          showsUserLocation
+          followsUserLocation
+          zoomEnabled
+            style={styles.map}
+            region={this.state.region}
+            onRegionChange={this.onRegionChange.bind(this)}
+          >
+            {
+              Object.keys(data).map((val) => {
+              return (
+                <MapView.Marker
+                  key={data[val].email}
+                  coordinate={data[val].location}
+                  title={data[val].message}
+                  onPress={this.markPress.bind(this)}
+                >
+                  <View>
+                    <Text>
+                      {data[val].email}
+                    </Text>
+                  </View>
+                </MapView.Marker>
+                );
+              })
+            }
+          </MapView>
+          </View>
+        </View>
+        <Card style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 8 }}>
+              <InputItem
+              controlled
+                autoCorrect={false}
+                onChange={(text) => dispatch({
+                  type: 'user/messageChanged',
+                  payload: text,
+                })}
+                value={message}
+                placeholder="message"
+              />
               </View>
-             </MapView.Marker>
-            );
-          })
-        }
-      </MapView>
+              <View style={{ flex: 2, justifyContent: 'center' }}>
+              <Button
+                onClick={this.onSubmit.bind(this)}
+                size="small"
+                type="ghost"
+              >
+                submit
+              </Button>
+              </View>
+            </View>
+        </Card>
       </View>
     );
   }
@@ -82,8 +125,8 @@ const styles = {
 };
 
 const mapStateToProps = (state) => {
-  const { users } = state.user;
-  return { users };
+  const { data, message } = state.user;
+  return { data, message };
 };
 
 export default connect(mapStateToProps)(Map);

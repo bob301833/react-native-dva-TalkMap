@@ -1,9 +1,10 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserLocation } from '../services/employee';
+import { signIn, getList, saveUserLocation, saveUserMessage } from '../services/employee';
 
 const INITIAL_STATE = {
-    users: ''
+    data: '',
+    message: ''
 };
 
 const userModel = {
@@ -22,15 +23,23 @@ subscriptions: {
 effects: {
   * saveLocation({ payload }, { call, put }) {
         const { currentUser } = firebase.auth();
-        const { user, err } = yield call(saveUserLocation, currentUser, payload);
-       // console.log(user);
-       // yield put({ type: 'UpdateUsersLocation', payload: user });
+        const { err } = yield call(saveUserLocation, currentUser, payload);
   },
+  * saveMessage({ payload }, { call, put }) {
+        const { currentUser } = firebase.auth();
+        const { err } = yield call(saveUserMessage, currentUser, payload);
+        if (!err) {
+          yield put({ type: 'messageChanged', payload: '' });
+        }
+  }
 },
 
 reducers: {
-  getUsersLocation(state, { payload: users }) {
-    return { ...state, users };
+  getUsersData(state, { payload: data }) {
+    return { ...state, data };
+  },
+  messageChanged(state, { payload: text }) {
+    return { ...state, message: text };
   },
 },
 };
