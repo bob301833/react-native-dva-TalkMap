@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserLocation, saveUserMessage } from '../services/employee';
+import { signIn, getList, saveUserLocation, saveUserMessage } from '../services/user';
 
 const INITIAL_STATE = {
     data: '',

@@ -43,33 +43,9 @@ const getList = (currentUserUid, cb) => {
   };
 };
 
-const saveEmployeesData = ({ name, phone, shift, currentUserUid, uid }) => {
-  return firebase.database().ref(`/users/${currentUserUid}/employees/${uid}`)
-    .set({ name, phone, shift })
-    .then((user) => ({ user }))
-    .catch((err) => ({ err }));
-};
-
-const createEmployeesData = ({ name, phone, shift = 'Monday', currentUserUid }) => {
-  return firebase.database().ref(`/users/${currentUserUid}/employees`)
-    .push({ name, phone, shift })
-    .then((user) => ({ user }))
-    .catch((err) => ({ err }));
-};
-
-const deleteEmployeesData = ({ currentUserUid, uid }) => {
-  return firebase.database().ref(`/users/${currentUserUid}/employees/${uid}`)
-    .remove()
-    .then((user) => ({ user }))
-    .catch(err => ({ err }));
-};
-
 export {
   signIn,
   getList,
-  saveEmployeesData,
-  createEmployeesData,
-  deleteEmployeesData,
   saveUserEmail,
   saveUserLocation,
   saveUserMessage
