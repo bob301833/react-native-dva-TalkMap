@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import MapView from 'react-native-maps';
-import { InputItem, List, Button, WhiteSpace, WingBlank, ActivityIndicator, Card } from 'antd-mobile';
+import { InputItem, Button, Card } from 'antd-mobile';
 import { connect } from 'dva';
-
-//latitude: 25.054136,
-//longitude: 121.544512,
+import _ from 'lodash';
+import { Actions } from 'react-native-router-flux';
 
 class Map extends Component {
 
   componentDidMount() {
+      const currentUserUid = this.props.currentUser.uid;
      navigator.geolocation.getCurrentPosition(
       (initialPosition) => {
-        console.log('initialPosition', initialPosition);
         this.props.dispatch({
           type: 'user/saveLocation',
           payload: {
+            currentUserUid,
             latitude: initialPosition.coords.latitude,
             longitude: initialPosition.coords.longitude
           }
@@ -25,11 +25,10 @@ class Map extends Component {
       { enableHighAccuracy: true, timeout: 2000, maximumAge: 1000 }
     );
       this.watchID = navigator.geolocation.watchPosition((lastPosition) => {
-      console.log('lastPosition', lastPosition);
-
       this.props.dispatch({
           type: 'user/saveLocation',
           payload: {
+            currentUserUid,
             latitude: lastPosition.coords.latitude,
             longitude: lastPosition.coords.longitude
           }
@@ -37,49 +36,79 @@ class Map extends Component {
     });
   }
 
-  onRegionChange(region) {
-    this.setState({ region });
-  }
-
   onSubmit() {
-    this.props.dispatch({
+    const currentUserUid = this.props.currentUser.uid;
+    const { dispatch, message } = this.props;
+
+    dispatch({
       type: 'user/saveMessage',
-      payload: this.props.message
+      payload: { currentUserUid, message }
     });
   }
 
-  markPress(e) {
-    console.log(e);
+  sendMessage(uid) {
+    const currentUserUid = this.props.currentUser.uid;
+
+    Actions.talk();
+    this.props.dispatch({
+      type: 'talk/addUserToRoom',
+      payload: { currentUserUid, uid }
+    });
   }
 
+  renderSendButton(uid) {
+    const { currentUser } = this.props;
+
+    if (currentUser.uid !== uid) {
+      return (
+      <Button
+          size="small"
+          type="ghost"
+          onClick={() => this.sendMessage(uid)}
+      >
+          send message
+        </Button>
+      );
+    }
+  }
+
+  renderMark(user, uid) {
+     return (
+     <View>
+          <Text>
+            Name: {user.email}
+          </Text>
+          <Text>
+            Message: {user.message}
+          </Text>
+          {this.renderSendButton(uid)}
+    </View>
+    );
+  }
 
   render() {
-    const { data, message, dispatch } = this.props;
+    const { data, message, dispatch, region } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 12 }}>
           <View style={styles.container}>
           <MapView
-          showsUserLocation
-          followsUserLocation
-          zoomEnabled
+            showsUserLocation
+            region={region}
+            zoomEnabled
             style={styles.map}
           >
             {
-              Object.keys(data).map((val) => {
-              const name = data[val].email.split('@');
+              _.map(data, (user, uid) => {
               return (
                 <MapView.Marker
-                  key={data[val].email}
-                  coordinate={data[val].location}
-                  title={data[val].message}
-                  onPress={this.markPress.bind(this)}
+                  key={uid}
+                  coordinate={user.location}
                 >
-                  <View>
-                    <Card>
-                      <Text>{name[0]} : {data[val].message}</Text>
-                    </Card>
-                  </View>
+                <MapView.Callout style={{ width: 200 }}>
+                  {this.renderMark(user, uid)}
+                </MapView.Callout>
+
                 </MapView.Marker>
                 );
               })
@@ -139,8 +168,9 @@ const styles = {
 };
 
 const mapStateToProps = (state) => {
-  const { data, message } = state.user;
-  return { data, message };
+  const { data, message, region } = state.user;
+  const currentUser = state.auth.user;
+  return { data, message, region, currentUser };
 };
 
 export default connect(mapStateToProps)(Map);

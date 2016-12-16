@@ -1,10 +1,14 @@
-import firebase from 'firebase';
-import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserLocation, saveUserMessage } from '../services/user';
+import { saveUserLocation, saveUserMessage } from '../services/user';
 
 const INITIAL_STATE = {
     data: '',
-    message: ''
+    message: '',
+    region: {
+      latitude: 25.054136,
+      longitude: 121.544512,
+      latitudeDelta: 0.005331069173575287,
+      longitudeDelta: 0.004023313891423186
+    }
 };
 
 const userModel = {
@@ -16,20 +20,19 @@ const userModel = {
   },
 
 subscriptions: {
-  setup({ dispatch }) {
-
-
-  },
 },
 
 effects: {
   * saveLocation({ payload }, { call, put }) {
-        const { currentUser } = firebase.auth();
-        const { err } = yield call(saveUserLocation, currentUser, payload);
+        yield put({
+          type: 'regionChanged',
+          payload
+        });
+        //const { currentUser } = firebase.auth();
+        yield call(saveUserLocation, payload);
   },
   * saveMessage({ payload }, { call, put }) {
-        const { currentUser } = firebase.auth();
-        const { err } = yield call(saveUserMessage, currentUser, payload);
+        const { err } = yield call(saveUserMessage, payload);
         if (!err) {
           yield put({ type: 'messageChanged', payload: '' });
         }
@@ -37,6 +40,10 @@ effects: {
 },
 
 reducers: {
+  regionChanged(state, { payload }) {
+    const { latitude, longitude } = payload;
+    return { ...state, region: { ...state.region, latitude, longitude } };
+  },
   getUsersData(state, { payload: data }) {
     return { ...state, data };
   },

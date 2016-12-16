@@ -8,15 +8,15 @@ const saveUserEmail = (currentUser) => {
     .set(currentUser.email);
 };
 
-const saveUserLocation = (currentUser, location) => {
-  return firebase.database().ref(`/users/${currentUser.uid}/location`)
-    .set(location)
+const saveUserLocation = ({ currentUserUid, latitude, longitude }) => {
+  return firebase.database().ref(`/users/${currentUserUid}/location`)
+    .set({ latitude, longitude })
     .then((suc) => ({ suc }))
     .catch((err) => ({ err }));
 };
 
-const saveUserMessage = (currentUser, message) => {
-  return firebase.database().ref(`/users/${currentUser.uid}/message`)
+const saveUserMessage = ({ currentUserUid, message }) => {
+  return firebase.database().ref(`/users/${currentUserUid}/message`)
     .set(message)
     .then((suc) => ({ suc }))
     .catch((err) => ({ err }));

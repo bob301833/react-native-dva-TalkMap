@@ -4,6 +4,8 @@ import firebase from 'firebase';
 import LoginForm from './routes/LoginForm';
 import Map from './routes/Map';
 import SplashScreen from './routes/SplashScreen';
+import talkList from './routes/talkList';
+import talk from './routes/talk';
 
 const RouterComponent = () => {
   return (
@@ -18,11 +20,19 @@ const RouterComponent = () => {
         <Scene
           leftTitle="Logout"
           onLeft={() => firebase.auth().signOut()}
+          rightTitle="talkList"
+          onRight={() => Actions.talkList()}
           key="Map"
           component={Map}
           title="Map"
           initial
         />
+        <Scene
+          key="talkList"
+          component={talkList}
+          title="Talk List"
+        />
+        <Scene key="talk" component={talk} title="Talk" />
       </Scene>
     </Router>
   );

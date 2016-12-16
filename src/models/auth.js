@@ -32,6 +32,7 @@ subscriptions: {
 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        dispatch({ type: 'login_user_successs', payload: user });
         saveUserEmail(user);
         getList(user.uid, data => {
           dispatch({ type: 'user/getUsersData', payload: data });
