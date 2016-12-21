@@ -6,6 +6,7 @@ import Map from './routes/Map';
 import SplashScreen from './routes/SplashScreen';
 import talkList from './routes/talkList';
 import talk from './routes/talk';
+import { updateUserOnline } from './services/user';
 
 const RouterComponent = () => {
   return (
@@ -19,7 +20,11 @@ const RouterComponent = () => {
       <Scene key="main">
         <Scene
           leftTitle="Logout"
-          onLeft={() => firebase.auth().signOut()}
+          onLeft={() => {
+            const user = firebase.auth().currentUser;
+            updateUserOnline(user, false);
+            firebase.auth().signOut();
+          }}
           rightTitle="talkList"
           onRight={() => Actions.talkList()}
           key="Map"

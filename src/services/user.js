@@ -3,6 +3,11 @@ import firebase from 'firebase';
 //const { currentUser } = firebase.auth();
 //const currentUserUid = currentUser.uid;
 
+const updateUserOnline = (currentUser, online) => {
+  return firebase.database().ref(`/users/${currentUser.uid}/online`)
+    .set(online);
+};
+
 const saveUserEmail = (currentUser) => {
   return firebase.database().ref(`/users/${currentUser.uid}/email`)
     .set(currentUser.email);
@@ -54,5 +59,6 @@ export {
   saveUserEmail,
   saveUserPicture,
   saveUserLocation,
-  saveUserMessage
+  saveUserMessage,
+  updateUserOnline
 };

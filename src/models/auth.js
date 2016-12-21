@@ -1,6 +1,12 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserEmail, saveUserPicture } from '../services/user';
+import {
+  signIn,
+  getList,
+  saveUserEmail,
+  saveUserPicture,
+  updateUserOnline
+} from '../services/user';
 
 const INITIAL_STATE = {
   email: '',
@@ -38,6 +44,15 @@ subscriptions: {
         dispatch({ type: 'login_user_successs', payload: user });
         saveUserEmail(user);
         saveUserPicture(user, uri);
+        const connectedRef = firebase.database().ref('.info/connected');
+        connectedRef.on('value', (snap) => {
+          if (snap.val() === true) {
+            console.log('connected');
+            updateUserOnline(user, true);
+          } else {
+            updateUserOnline(user, false);
+          }
+        });
 
         getList(user.uid, data => {
           dispatch({ type: 'user/getUsersData', payload: data });

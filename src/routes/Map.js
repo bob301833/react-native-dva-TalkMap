@@ -81,6 +81,7 @@ class Map extends Component {
           <Text>
             Message: {user.message}
           </Text>
+          { (user.online && <Text>OnLine</Text>) || <Text>OffLine</Text>}
           {this.renderSendButton(user, uid)}
     </View>
     );
