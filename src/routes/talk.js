@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { InputItem, Button, Card } from 'antd-mobile';
 import { connect } from 'dva';
 import _ from 'lodash';
+import AutoScroll from 'react-native-auto-scroll';
 import { getTalkList } from '../services/talk';
 
 class talk extends Component {
@@ -26,6 +27,7 @@ class talk extends Component {
 
     return (
       <View style={{ flex: 1 }} >
+        <AutoScroll>
         {
           _.map(this.props.contents, (content, key) => {
             const isSelf = content.uid === this.props.currentUser.uid;
@@ -42,6 +44,7 @@ class talk extends Component {
             );
           })
         }
+        </AutoScroll>
       </View>
     );
   }

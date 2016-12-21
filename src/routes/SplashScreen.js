@@ -5,7 +5,7 @@ const SplashScreen = () => {
   return (
     <View style={styles.viewStyle}>
       <Text style={styles.textStyle}>
-        Welcome
+        Talk Map
       </Text>
     </View>
   );
