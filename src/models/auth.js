@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { signIn, getList, saveUserEmail } from '../services/user';
+import { signIn, getList, saveUserEmail, saveUserPicture } from '../services/user';
 
 const INITIAL_STATE = {
   email: '',
@@ -32,8 +32,13 @@ subscriptions: {
 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        const jpgId = Math.floor((Math.random() * 1000) + 1);
+        const uri = `https://avatars2.githubusercontent.com/u/${jpgId}`;
+
         dispatch({ type: 'login_user_successs', payload: user });
         saveUserEmail(user);
+        saveUserPicture(user, uri);
+
         getList(user.uid, data => {
           dispatch({ type: 'user/getUsersData', payload: data });
         });

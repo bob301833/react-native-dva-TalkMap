@@ -8,6 +8,11 @@ const saveUserEmail = (currentUser) => {
     .set(currentUser.email);
 };
 
+const saveUserPicture = (currentUser, uri) => {
+  return firebase.database().ref(`/users/${currentUser.uid}/picture`)
+    .set(uri);
+};
+
 const saveUserLocation = ({ currentUserUid, latitude, longitude }) => {
   return firebase.database().ref(`/users/${currentUserUid}/location`)
     .set({ latitude, longitude })
@@ -47,6 +52,7 @@ export {
   signIn,
   getList,
   saveUserEmail,
+  saveUserPicture,
   saveUserLocation,
   saveUserMessage
 };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { InputItem, Button, Card } from 'antd-mobile';
 import { connect } from 'dva';
 import _ from 'lodash';
@@ -22,15 +22,21 @@ class talk extends Component {
   }
 
   renderContent() {
-    const { selfMessageStyle, otherMessageStyle } = styles;
+    const { selfMessageStyle, otherMessageStyle, ImageStyle } = styles;
+
     return (
       <View style={{ flex: 1 }} >
         {
           _.map(this.props.contents, (content, key) => {
-            const messageStyle =
-              (content.uid === this.props.currentUser.uid) ? selfMessageStyle : otherMessageStyle;
+            const isSelf = content.uid === this.props.currentUser.uid;
+            const messageStyle = isSelf ? selfMessageStyle : otherMessageStyle;
+
             return (
               <View style={messageStyle} key={key}>
+                    { !isSelf && <Image
+                    style={ImageStyle}
+                    source={{ uri: this.props.user.picture }}
+                    />}
                 <Text>{content.message}</Text>
               </View>
             );
@@ -85,6 +91,10 @@ const styles = {
   otherMessageStyle: {
     flexDirection: 'row',
     justifyContent: 'flex-start'
+  },
+  ImageStyle: {
+    width: 30,
+    height: 30
   }
 };
 const mapStateToProps = (state) => {

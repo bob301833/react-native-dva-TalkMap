@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import MapView from 'react-native-maps';
 import { InputItem, Button, Card } from 'antd-mobile';
 import { connect } from 'dva';
@@ -46,17 +46,17 @@ class Map extends Component {
     });
   }
 
-  sendMessage(uid) {
+  sendMessage(user, uid) {
     const currentUserUid = this.props.currentUser.uid;
 
-    Actions.talk();
+    Actions.talk({ user });
     this.props.dispatch({
       type: 'talk/addUserToRoom',
       payload: { currentUserUid, uid }
     });
   }
 
-  renderSendButton(uid) {
+  renderSendButton(user, uid) {
     const { currentUser } = this.props;
 
     if (currentUser.uid !== uid) {
@@ -64,7 +64,7 @@ class Map extends Component {
       <Button
           size="small"
           type="ghost"
-          onClick={() => this.sendMessage(uid)}
+          onClick={() => this.sendMessage(user, uid)}
       >
           send message
         </Button>
@@ -81,7 +81,7 @@ class Map extends Component {
           <Text>
             Message: {user.message}
           </Text>
-          {this.renderSendButton(uid)}
+          {this.renderSendButton(user, uid)}
     </View>
     );
   }
@@ -105,6 +105,10 @@ class Map extends Component {
                   key={uid}
                   coordinate={user.location}
                 >
+                  <Image
+                  style={{ width: 30, height: 30 }}
+                  source={{ uri: user.picture }}
+                  />
                 <MapView.Callout style={{ width: 200 }}>
                   {this.renderMark(user, uid)}
                 </MapView.Callout>
