@@ -57,14 +57,13 @@ subscriptions: {
         getList(user.uid, data => {
           dispatch({ type: 'user/getUsersData', payload: data });
         });
-        //setTimeout(() => {
+        setTimeout(() => {
           Actions.main();
-
-        //}, 3000);
+        }, 3000);
       } else {
-        //setTimeout(() => {
+        setTimeout(() => {
           Actions.auth();
-        //}, 3000);
+        }, 3000);
       }
     });
   },
