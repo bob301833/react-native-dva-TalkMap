@@ -8,9 +8,10 @@ const updateUserOnline = (currentUser, online) => {
     .set(online);
 };
 
-const saveUserEmail = (currentUser) => {
-  return firebase.database().ref(`/users/${currentUser.uid}/email`)
-    .set(currentUser.email);
+const saveUserName = (currentUser) => {
+  const username = currentUser.email.split('@');
+  return firebase.database().ref(`/users/${currentUser.uid}/username`)
+    .set(username[0]);
 };
 
 const saveUserPicture = (currentUser, uri) => {
@@ -56,7 +57,7 @@ const getList = (currentUserUid, cb) => {
 export {
   signIn,
   getList,
-  saveUserEmail,
+  saveUserName,
   saveUserPicture,
   saveUserLocation,
   saveUserMessage,

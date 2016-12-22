@@ -46,8 +46,9 @@ const createUserRoom = (currentUserUid, uid) => {
 
 const addUserContent = ({ nowRoomId, currentUser, message }) => {
   const { uid, email } = currentUser;
+  const username = email.split('@')[0];
   return firebase.database().ref(`/talk/room/${nowRoomId}/contents`)
-    .push({ uid, email, message, time: Date.now() })
+    .push({ uid, username, message, time: Date.now() })
     .then((room) => ({ room }))
     .catch((err) => ({ err }));
 };

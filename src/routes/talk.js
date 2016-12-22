@@ -9,7 +9,6 @@ import { getTalkList } from '../services/talk';
 class talk extends Component {
   componentDidMount() {
     const { nowRoomId, dispatch } = this.props;
-    console.log(nowRoomId);
 
     getTalkList(nowRoomId, contentData => {
         dispatch({ type: 'talk/getTalkData', payload: contentData });

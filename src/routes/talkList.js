@@ -55,13 +55,12 @@ class talkList extends Component {
         return content.message;
       });
       const last = message.length - 1;
-      const username = this.props.data[other].email.split('@');
-
+      const username = this.props.data[other].username;
       return (
         <TouchableWithoutFeedback onPress={() => this.onRowPress(roomId)}>
           <View>
             <Text style={styles.titleStyle}>
-              {username[0]}
+              {username}
             </Text>
             <Text style={styles.contentStyle}>
               {message[last]}

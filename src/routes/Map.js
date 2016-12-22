@@ -71,11 +71,10 @@ class Map extends Component {
   }
 
   renderMark(user, uid) {
-    const username = user.email.split('@');
      return (
      <View>
           <Text>
-            Name: {username[0]}
+            Name: {user.username}
           </Text>
           <Text>
             Message: {user.message}

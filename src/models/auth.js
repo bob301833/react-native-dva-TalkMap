@@ -3,7 +3,7 @@ import { Actions } from 'react-native-router-flux';
 import {
   signIn,
   getList,
-  saveUserEmail,
+  saveUserName,
   saveUserPicture,
   updateUserOnline
 } from '../services/user';
@@ -42,7 +42,7 @@ subscriptions: {
         const uri = `https://avatars2.githubusercontent.com/u/${jpgId}`;
 
         dispatch({ type: 'login_user_successs', payload: user });
-        saveUserEmail(user);
+        saveUserName(user);
         saveUserPicture(user, uri);
         const connectedRef = firebase.database().ref('.info/connected');
         connectedRef.on('value', (snap) => {
