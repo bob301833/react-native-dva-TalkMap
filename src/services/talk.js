@@ -26,8 +26,8 @@ const getTalkList = (roomId, cb) => {
 const checkRoom = (rooms, currentUserUid, uid) => {
   const roomId = _.findKey(rooms, (room) => {
     const match =
-     (room.users[0] === currentUserUid && room.users[1] === uid) ||
-     (room.users[1] === currentUserUid && room.users[0] === uid);
+      _.includes(room.users, currentUserUid) &&
+      _.includes(room.users, uid);
     return match;
   });
   return roomId;

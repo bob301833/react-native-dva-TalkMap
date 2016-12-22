@@ -9,6 +9,8 @@ import { getTalkList } from '../services/talk';
 class talk extends Component {
   componentDidMount() {
     const { nowRoomId, dispatch } = this.props;
+    console.log(nowRoomId);
+
     getTalkList(nowRoomId, contentData => {
         dispatch({ type: 'talk/getTalkData', payload: contentData });
     });
@@ -32,13 +34,15 @@ class talk extends Component {
           _.map(this.props.contents, (content, key) => {
             const isSelf = content.uid === this.props.currentUser.uid;
             const messageStyle = isSelf ? selfMessageStyle : otherMessageStyle;
-
+            const uri = this.props.data[content.uid].picture;
             return (
               <View style={messageStyle} key={key}>
-                    { !isSelf && <Image
+                  {
+                    !isSelf && <Image
                     style={ImageStyle}
-                    source={{ uri: this.props.user.picture }}
-                    />}
+                    source={{ uri }}
+                    />
+                  }
                 <Text>{content.message}</Text>
               </View>
             );
@@ -101,9 +105,10 @@ const styles = {
   }
 };
 const mapStateToProps = (state) => {
+  const { data } = state.user;
   const currentUser = state.auth.user;
   const { message, nowRoomId, contents } = state.talk;
-  return { currentUser, message, nowRoomId, contents };
+  return { data, currentUser, message, nowRoomId, contents };
 };
 
 export default connect(mapStateToProps)(talk);

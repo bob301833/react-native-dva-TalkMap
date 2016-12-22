@@ -4,7 +4,6 @@ import MapView from 'react-native-maps';
 import { InputItem, Button, Card } from 'antd-mobile';
 import { connect } from 'dva';
 import _ from 'lodash';
-import { Actions } from 'react-native-router-flux';
 
 class Map extends Component {
 
@@ -49,7 +48,6 @@ class Map extends Component {
   sendMessage(user, uid) {
     const currentUserUid = this.props.currentUser.uid;
 
-    Actions.talk({ user });
     this.props.dispatch({
       type: 'talk/addUserToRoom',
       payload: { currentUserUid, uid }
@@ -73,10 +71,11 @@ class Map extends Component {
   }
 
   renderMark(user, uid) {
+    const username = user.email.split('@');
      return (
      <View>
           <Text>
-            Name: {user.email}
+            Name: {username[0]}
           </Text>
           <Text>
             Message: {user.message}

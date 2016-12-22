@@ -1,4 +1,5 @@
 import { addUserContent, createUserRoom, getRoomList, checkRoom } from '../services/talk';
+import { Actions } from 'react-native-router-flux';
 
 const INITIAL_STATE = {
   message: '',
@@ -42,6 +43,15 @@ effects: {
         payload: roomId
       });
     }
+    Actions.talk();
+  },
+  * goToRoom({ payload }, { put }) {
+      const { roomId } = payload;
+      yield put({
+            type: 'updateNowRoomId',
+            payload: roomId
+      });
+      Actions.talk();
   },
   * addMessage({ payload }, { call, put }) {
     yield call(addUserContent, payload);
