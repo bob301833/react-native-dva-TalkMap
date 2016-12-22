@@ -45,12 +45,12 @@ subscriptions: {
         saveUserName(user);
         saveUserPicture(user, uri);
         const connectedRef = firebase.database().ref('.info/connected');
+
         connectedRef.on('value', (snap) => {
           if (snap.val() === true) {
-            console.log('connected');
             updateUserOnline(user, true);
-          } else {
-            updateUserOnline(user, false);
+            const ref = firebase.database().ref(`/users/${user.uid}/online`);
+            ref.onDisconnect().set(false);
           }
         });
 
